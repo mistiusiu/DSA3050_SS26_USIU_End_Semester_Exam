@@ -1,8 +1,8 @@
-# Project Title
+# Supply Chain Logistics Analysis: Optimization of Delivery Patterns and Profitability
 
 ![USIU Logo](assets/usiu-logo.png)
 
-**Misati Nyambane - XXXX45**
+**Misati Nyambane - \*\*\*\*45**
 
 **DSA3050A Spring Semester 2026**
 
