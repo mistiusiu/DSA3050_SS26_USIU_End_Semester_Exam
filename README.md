@@ -1,106 +1,65 @@
-# Supply Chain Logistics Analysis: Optimization of Delivery Patterns and Profitability
+# Supply Chain Logistics & Financial Performance Analysis
 
 ![USIU Logo](assets/usiu-logo.png)
 
-**Misati Nyambane - \*\*\*\*45**
+**Course:** DSA 3050A – Data Science & Analytics  
+**Institution:** United States International University - Africa (USIU)  
+**Author:** Misati Nyambane - \*\*\*\*45  
 
-**DSA3050A Spring Semester 2026**
+## Project Overview and Data Foundation
 
-## Project Overview
+This project executes a comprehensive business intelligence lifecycle on a global supply chain dataset comprising 180,519 records. The analysis is built upon a dataset sourced from Mendeley Data and Kaggle under a Creative Commons 0 license, featuring a complex array of 53 categorical and numerical variables. The primary objective is to evaluate delivery efficiency and financial health across diverse geographic markets and product lines. By examining key pillars such as payment methods, scheduled versus real shipping durations, and net profit per order, the study seeks to uncover the root causes of logistical delays and profit leakage. The problem space is defined by the critical need to identify fraudulent patterns and underperforming segments, ultimately answering how the company can pivot its strategy to ensure high-margin, timely operations.
 
-This project focuses on the end-to-end business intelligence lifecycle, from data acquisition to analytical insight, of a global supply chain dataset. The primary goal is to evaluate delivery efficiency and financial health across different geographic markets, customer segments, and product lines. By utilizing a Star Schema data model and advanced DAX measures, the analysis uncovers specific operational gaps and highlights factors that correlate with late deliveries and profit leakage.
+## Data ETL and Transformation Methodology
 
-## Problem Statement
+The raw data underwent a rigorous transformation process within Power Query to ensure both statistical integrity and model performance. To reduce the memory footprint and eliminate noise, 24 irrelevant or sensitive columns—including customer credentials and internal IDs—were removed. Data quality was further enhanced by filtering out "FALSE" placeholders in geographic fields and standardizing inconsistent casing across payment and status columns. A significant portion of the ETL phase involved geographic remapping, such as standardizing the Spanish "EE. UU." abbreviation to "United States of America" and expanding market codes like "LATAM" to "Latin America." To support advanced time-intelligence, order and shipping timestamps were typecast into a standard US locale, allowing the engine to recognize chronological trends rather than treating dates as simple text strings.
 
-The shipping company faces challenges in maintaining consistent delivery speeds and maximizing profit margins across its diverse product categories and global territories. There is a critical need to identify the root causes of late deliveries and fraudulent transactions while determining which product segments are underperforming. The project aims to answer: _Which factors drive logistical delays, and how can the company pivot its strategy to ensure high-margin, timely operations?_
+![Fact Table Power Query](screenshots/power_query_fact_table.png)
 
-## Dataset Description
+![Dimension Tables Variant 1](screenshots/power_query_dimension_tables_variant_1.png)
 
-The selected raw dataset has 53 columns and 180,519 rows on the supply chain of a shipping company. This dataset examines the payment methods, shipping destinations, order date and time, shipping date and time, and the like. Moreover, it has both categorical and numerical variables with two dedicated date fields. One pertaining to the order date and another pertaining to the shipping date. This enables (10 – update number) dimension tables to be created. This dataset was obtained from Kaggle under a CC0 (Creative Commons 0) license and was originally retrieved from Mendley Data under the same license.
+![Dimension Tables Variant 2](screenshots/power_query_dimension_tables_variant_2.png)
 
-This raw dataset has the key columns of:
+## Architectural Data Modeling
 
-- **Type** – The payment method used. This could inform whether delivery speed could be correlated with the means an individual pays. Although, this is a highly unlikely correlation.
+The structural integrity of this analysis relies on a Star Schema architecture, which remains the industry standard for high-performance analytical databases. At the center of this model lies the FactSupplyChain table, acting as the single source of truth for all quantitative measurements. This central hub is surrounded by sixteen specialized dimension tables, ranging from DimProduct to DimPaymentType, which provide the descriptive context necessary to slice and dice the metrics. To handle the complexities of the supply chain lifecycle, the model employs role-playing dimensions for both order and shipping dates. This configuration allows for independent analysis of sales intake versus fulfillment performance. One-to-many relationships and single-direction cross-filtering ensure that calculations remain efficient and free from the ambiguity often found in flatter, less organized data structures.
 
-- **Days_for_shipping_real** – The actual time it took to ship the products
+![Data Model](screenshots/data_model.png)
 
-- **Days_for_shipping_scheduled** – The time slotted to ship the product.
+## Analytical Logic and DAX Development
 
-- **Delivery_Status** – The status of the delivery derived in part from the amount of time it took to ship the product viz a viz how long it was supposed to take.
+Beyond simple aggregation, this project utilizes custom DAX measures and calculated columns to drive deeper insights. Two primary calculated columns, Order Value Tier and Profitability Segment, allow stakeholders to immediately isolate high-value transactions or loss-making shipments for root-cause analysis. The measurement suite includes core KPIs such as Total Sales and Total Profit, alongside more sophisticated metrics like Profit Margin percentage, which uses safe division to handle zero-denominator errors. To evaluate the company's trajectory, time-intelligence measures were developed to track Year-to-Date performance and Year-over-Year growth. These trend indicators provide a baseline for historical comparison, enabling the business to determine if current strategies are yielding better efficiency than the previous cycle.
 
-- **order_date_DateOrders** – The date and time that a product was ordered.
+![Order Value Tier Calculated Column](screenshots/order_value_tier_calculated_column.png)
 
-- **shipping_date_DateOrders** – The date and time that a product was dispatched for shipment.
+![Sales Growth % DAX Measure](screenshots/sales_growth_percentage_dax_measure.png)
 
-- **Shipping_Mode** – The priority rank of a shipment. There might be a correlation between this priority and whether a shipment is early or late.
+## Dashboard Design and User Experience
 
-- **Order_Profit_Per_Order** – The amount of money made net for the shipment. This value can be negative indicating the the company made a loss. There might be a correlation between how much profit is made and how much priority a product is given in shipment.
+The visualization layer is organized into a three-page interactive report consisting of an Executive Summary, a Detailed Analysis page, and a Performance Monitoring dashboard. The design prioritizes scannability, placing synchronized slicers for categories, segments, and shipping modes at the top of each page to ensure a fluid filtering experience across the entire report. While the Executive Summary provides rapid situational awareness through KPI cards and trend charts, the Detailed Analysis page leverages advanced visuals like the Decomposition Tree and Key Influencers. These tools allow analysts to move from a high-level category view down to specific product-level performance, highlighting exactly which factors—such as specific cities or shipping modes—are driving suspected fraudulent activity or logistical bottlenecks.
 
+![Executive Summary](screenshots/executive_summary_default_values.png)
 
-## Tools Used
+![Detailed Analysis](screenshots/detailed_analysis_suspected_fraud.png)
 
-**Power BI Desktop:** For data modeling, DAX development, and visualization.
+![Insights and Performance Monitoring](screenshots/insights_and_performance_monitoring.png)
 
-**Power Query (M):** For data cleaning, normalization, and ETL processes.
+## Strategic Insights and Performance Outcomes
 
-**GitHub:** For project documentation and version control.
+The analysis revealed several critical intersections between logistical operations and financial risk. Most notably, a 100% correlation was discovered between suspected fraudulent transactions and the Bank Transfer payment method, specifically originating from a geographic cluster including Cincinnati, Ewa Beach, and West Jordan. Financially, the company experienced significant profit leakage in the Basketball and Strength Training categories within the Consumer segment. Conversely, Fishing, Cleats, and Camping & Hiking emerged as the "Bread and Butter" categories, maintaining resilient margins across all customer segments. While raw sales volume showed fluctuations, the 2017-2018 calendar year saw a marked improvement in Average Order Value and Sales Growth, suggesting that recent policy shifts toward higher-quality transactions are effectively protecting the bottom line.
 
-**DAX (Data Analysis Expressions):** For advanced analytical measures and time intelligence.
+![Analytical Insights 2016 - 2017](screenshots/analytical_insights_2016_2017.png)
 
-## Steps Followed
+![Analytical Insights 2017 - 2018](screenshots/analytical_insights_2017_2018.png)
 
-1. **Data Acquisition:** Sourced the supply chain dataset from Mendeley Data/Kaggle.
+![Analytical Insights YoY Sales Performance](screenshots/analytical_insights_yoy_sales_performance.png)
 
-2. **Data Cleaning:** Removed 24 irrelevant or sensitive columns (e.g., passwords, emails). Standardized casing, handled "FALSE" values as nulls, and corrected geographic abbreviations (e.g., EE. UU. to USA).
+## Conclusions and Recommendations
 
-3. **Modeling:** Developed a Star Schema with a central FactSupplyChain table surrounded by 16 dimensions. Set up Role-Playing Dimensions for Order Date and Shipping Date.
+Based on these findings, it is recommended that the company implement immediate manual audits for all bank transfers originating from the identified high-risk cities. A strategic pivot is necessary to move away from loss-making sports categories and toward the high-margin success seen in Fishing and Cleats. Furthermore, the data highlights a burgeoning export market in Nigeria and Canada, alongside domestic growth hubs in Philadelphia, Detroit, and Las Vegas. By prioritizing infrastructure and logistics lanes toward these high-velocity jurisdictions, the company can capitalize on emerging demand while maintaining the operational excellence observed in the latest fiscal cycle.
 
-4. **DAX Development:** Created 8+ measures (YTD Sales, Sales Growth %, Profit Margins) and 2 calculated columns for segmentation.
+![Analytical Insights Suspected Fraud Payment Type](screenshots/analytical_insights_all_time_suspected_fraud_payment_type.png)
 
-5. **Visualization:** Designed a 3-page interactive report consisting of an Executive Summary, Detailed Analysis (Drill-downs), and Performance Monitoring (KPIs).
+![Analytical Insights Suspected Fraud Cities](screenshots/analytical_insights_all_time_suspected_fraud_cities.png)
 
-6. **Insight Generation:** Performed cross-comparison analysis to identify fraudulent patterns and high-growth markets.
-
-## Dashboard Features
-
-**Executive Summary:** High-level KPIs and slicers for rapid situational awareness.
-
-**Drill-Down Logic:** Ability to move from Category level down to specific Product performance.
-
-**Sync Slicers:** Filters applied on the first page propagate throughout the entire report for a seamless user experience.
-
-**Analytical Visuals:** Utilized a Decomposition Tree for profit breakdown and Key Influencers to identify drivers of fraudulent orders.
-
-**Conditional Formatting:** A heatmap applied to Profit Margins to instantly flag loss-making regions.
-
-## Key DAX Measures
-
-**Total Sales:** Primary KPI tracking the overall scale of business.
-
-**Total Profit:** Aggregates net profit to assess financial health.
-
-**Profit Margin %:** Identifies the efficiency of regions in generating value.
-
-**Sales LY:** Uses SAMEPERIODLASTYEAR to provide a baseline for historical comparison.
-
-**Sales Growth %:** A trend indicator calculating percentage change vs. the previous cycle.
-
-**Total Sales YTD:** Tracks performance against annual targets.
-
-## Key Insights
-
-**Fraud Detection:** Fraudulent orders are exclusively correlated with Bank Transfer payments and originate primarily from Cincinnati, Ewa Beach, and West Jordan.
-
-**Profit Leakage:** The company experienced significant losses in the Basketball and Strength Training categories within the Consumer segment.
-
-**Growth Opportunities:** Nigeria and Canada are the highest growth markets for exports, while Philadelphia, Detroit, and Las Vegas are the top emerging domestic cities.
-
-**Strategic Pivot:** High-profit Bread and Butter categories were identified as Fishing, Cleats, and Camping & Hiking.
-
-## Challenges Encountered
-
-The selected dataset is **~100 MB** in size with more than 180,000 rows across 53 columns thus importing and manipulating the data often caused my device to run quite hot for extended periods of time. Additionally, implementing Time Intelligence required the creation of a dedicated Date Table to resolve duplicate value errors in the raw order date fields.
-
-## Conclusion
-
-The analysis successfully identifies the critical intersections between logistics and finance. By shifting focus away from loss-making sports categories and increasing scrutiny on specific payment methods in high-risk cities, the company can significantly protect its margins. Maintaining the current trajectory in high-growth regions like Canada and Nigeria will ensure long-term scalability and operational excellence.
+Read the [full report](report/Supply%20Chain%20Logistics%20Analysis.pdf).
