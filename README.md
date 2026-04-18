@@ -2,7 +2,7 @@
 
 ![USIU Logo](assets/usiu-logo.png)
 
-**Course:** DSA 3050A – Data Science & Analytics  
+**Course:** DSA3050A – Business Intelligence and Data Visualisation    
 **Institution:** United States International University - Africa (USIU)  
 **Author:** Misati Nyambane - \*\*\*\*45  
 
